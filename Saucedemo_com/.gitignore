@@ -3,7 +3,7 @@ __pycache__/
 *.pyc
 
 # IDE (PyCharm / IntelliJ)
-.idea/
+../.idea/
 *.iml
 
 # Playwright / тестовые файлы

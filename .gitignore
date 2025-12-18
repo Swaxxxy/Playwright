@@ -1,0 +1,12 @@
+# Python
+__pycache__/
+*.pyc
+
+# IDE (PyCharm / IntelliJ)
+../.idea/
+*.iml
+
+# Playwright / тестовые файлы
+screenshots/
+Saucedemo_com/screenshots/
+report.html

@@ -96,55 +96,42 @@ def test_auth_blank_fields_error(login):
         expect(login.error_warning_pics.nth(i)).to_be_hidden()
 
 
-'''def auth_invalid_field_error (page:Page):
+def test_auth_invalid_field_error (login):
 
-    valid_username_list = ('standard_user', 'locked_out_user', 'problem_user', 'performance_glitch_user', 'error_user', 'visual_user')
-    username = random.choice(valid_username_list)
+    #username_list = ('standard_user', 'locked_out_user', 'problem_user', 'performance_glitch_user', 'error_user', 'visual_user')
 
-    #Селекторы:
-    login_button = page.locator('#login-button')
-    auth_block = page.locator('#login_button_container')
-    username_field = page.locator('#user-name')
-    password_field = page.locator('#password')
-        # Блок ошибок
-    error_box = page.locator('.error-message-container')
-    error_button = page.locator('.error-button')
-    error_warning_pics = (page.locator("svg[data-icon='times-circle']"))
+    login.page.goto(project_url)
 
-    page.goto(project_url)
+    #Проверка окружения - поля ввода и кнопка Login на месте
+    expect(login.auth_block).to_be_visible() #лишняя?
+    expect(login.username_field).to_be_visible()
+    expect(login.password_field).to_be_visible()
+    expect(login.login_button).to_be_visible()
 
-    # Проверка окружения - поля ввода и кнопка Login на месте
-    expect(auth_block).to_be_visible()
-    expect(login_button).to_be_visible()
-    expect(username_field).to_be_visible()
-    expect(password_field).to_be_visible()
+    #Действия
+    login.username_field.fill('standard_user') # заполнить поле username текстом standard_user
 
-    username_field.fill(username) #ввод валидного username
-    login_button.click()
-
-    #Проверки после клика
-    expect(error_box).to_contain_text('Epic sadface: Username is required')  # ворнинг содержит нужный тест ошибки
-    expected_color = hex_to_rgb_str("#e2231a")  # конвертация hex → rgb
-    expect(error_box).to_have_css('background-color', expected_color)  # ворнинг нужного цвета
-    expect(error_button).to_be_visible() #ворнинг содержит крестик для закрытия
-    print("count:", error_warning_pics.count())
-    for i in range(error_warning_pics.count()):
-        expect(error_warning_pics.nth(i)).to_be_visible() #отображаются крестики в полях ввода
-
-
+    # Сделать скрин с заполненным полем
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    page.screenshot(path=f"screenshots/{'after_login_click'}_{timestamp}.png")
+    login.page.screenshot(path=f"screenshots/{'username_filled'}_{timestamp}.png")
 
-    error_button.click()
+    login.login_button.click() #нажать кнопку Login
 
     #Проверки после клика
-    expect(error_box).to_contain_text('')  # ворнинг пустой
-    expect(error_box).to_have_css('background-color', 'rgb(255, 255, 255)')
-    expect(error_button).to_be_hidden()
-    print("count:", error_warning_pics.count())
-    for i in range(error_warning_pics.count()):
-        expect(error_warning_pics.nth(i)).to_be_hidden()
-'''
+    expect(login.error_box).to_contain_text('Epic sadface: Password is required')  # ворнинг содержит нужный тест ошибки
+    expected_color = hex_to_rgb_str("#e2231a")  # конвертация hex → rgb
+    expect(login.error_box).to_have_css('background-color', expected_color)  # ворнинг нужного цвета
+    expect(login.error_button).to_be_visible() #ворнинг содержит крестик для закрытия
+    for i in range(login.error_warning_pics.count()):
+        expect(login.error_warning_pics.nth(i)).to_be_visible() #отображаются крестики в полях ввода
+
+    #Сделать скрин с текстом ошибки
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    login.page.screenshot(path=f"screenshots/{'after_empty_password_click'}_{timestamp}.png")
+
+    #Закрыть ошибку
+    login.error_button.click()
+
 
 
 

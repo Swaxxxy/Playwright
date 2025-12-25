@@ -1,7 +1,7 @@
 import re
 import pytest
 
-from Config import project_url,cred_list_text,hex_to_rgb_str
+from Config import project_url,project_url_after_auth,cred_list_text,hex_to_rgb_str
 from datetime import datetime
 from playwright.sync_api import Page,expect
 from Login_page import LoginPage
@@ -61,6 +61,32 @@ def test_futer_block (login):
     expect(login.cred_passwords).to_be_visible()
     expect(login.cred_passwords).to_contain_text('Password for all users:secret_sauce')
 
+def test_auth_happy_path (login):
+
+    #username_list = ('standard_user', 'locked_out_user', 'problem_user', 'performance_glitch_user', 'error_user', 'visual_user')
+    #password = secret_sauce
+
+    login.page.goto(project_url)
+
+    #Проверка окружения - поля ввода и кнопка Login на месте
+    expect(login.username_field).to_be_visible()
+    expect(login.password_field).to_be_visible()
+    expect(login.login_button).to_be_visible()
+
+    #Действия
+    login.username_field.fill('standard_user') # заполнить поле username текстом standard_user
+    login.password_field.fill('secret_sauce')
+
+    # Сделать скрин с заполненным полем
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    login.page.screenshot(path=f"screenshots/username_filled_{timestamp}.png")
+
+    login.login_button.click() #нажать кнопку Login
+
+    #Проверки после клика
+
+    expect(login.page).to_have_url(project_url_after_auth)
+
 def test_auth_blank_fields_error(login):
 
     login.page.goto(project_url)
@@ -83,7 +109,7 @@ def test_auth_blank_fields_error(login):
 
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    login.page.screenshot(path=f"screenshots/{'after_login_click'}_{timestamp}.png")
+    login.page.screenshot(path=f"screenshots/after_login_click_{timestamp}.png")
 
     login.error_button.click()
 
@@ -96,14 +122,13 @@ def test_auth_blank_fields_error(login):
         expect(login.error_warning_pics.nth(i)).to_be_hidden()
 
 
-def test_auth_invalid_field_error (login):
+def test_auth_one_field_blank_error (login):
 
     #username_list = ('standard_user', 'locked_out_user', 'problem_user', 'performance_glitch_user', 'error_user', 'visual_user')
 
     login.page.goto(project_url)
 
     #Проверка окружения - поля ввода и кнопка Login на месте
-    expect(login.auth_block).to_be_visible() #лишняя?
     expect(login.username_field).to_be_visible()
     expect(login.password_field).to_be_visible()
     expect(login.login_button).to_be_visible()
@@ -113,7 +138,7 @@ def test_auth_invalid_field_error (login):
 
     # Сделать скрин с заполненным полем
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    login.page.screenshot(path=f"screenshots/{'username_filled'}_{timestamp}.png")
+    login.page.screenshot(path=f"screenshots/username_filled_{timestamp}.png")
 
     login.login_button.click() #нажать кнопку Login
 
@@ -127,12 +152,12 @@ def test_auth_invalid_field_error (login):
 
     #Сделать скрин с текстом ошибки
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    login.page.screenshot(path=f"screenshots/{'after_empty_password_click'}_{timestamp}.png")
+    login.page.screenshot(path=f"screenshots/after_empty_password_click_{timestamp}.png")
 
     #Закрыть ошибку
     login.error_button.click()
 
-
+#def test_auth_invalid_fill_error
 
 
 

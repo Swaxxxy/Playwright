@@ -87,6 +87,10 @@ def test_auth_happy_path (login):
 
     expect(login.page).to_have_url(project_url_after_auth)
 
+    # Сделать скрин
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    login.page.screenshot(path=f"screenshots/correct_redirect_{timestamp}.png")
+
 def test_auth_blank_fields_error(login):
 
     login.page.goto(project_url)
@@ -157,7 +161,110 @@ def test_auth_one_field_blank_error (login):
     #Закрыть ошибку
     login.error_button.click()
 
-#def test_auth_invalid_fill_error
+
+def test_auth_invalid_fill_error (login):
+
+    #username_list = ('standard_user', 'locked_out_user', 'problem_user', 'performance_glitch_user', 'error_user', 'visual_user')
+
+    login.page.goto(project_url)
+
+    #Проверка окружения - поля ввода и кнопка Login на месте
+    expect(login.username_field).to_be_visible()
+    expect(login.password_field).to_be_visible()
+    expect(login.login_button).to_be_visible()
+
+    #Действия
+    login.username_field.fill('Пользователь_12') # заполнить поле username текстом не из списка валидных
+    login.password_field.fill('Тест_password1234')  # заполнить поле username текстом не из списка валидных
+
+    # Сделать скрин с заполненными полями
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    login.page.screenshot(path=f"screenshots/username_filled_{timestamp}.png")
+
+    login.login_button.click() #нажать кнопку Login
+
+    #Проверки после клика
+    expect(login.error_box).to_contain_text('Epic sadface: Username and password do not match any user in this service')  # ворнинг содержит нужный тест ошибки
+    expected_color = hex_to_rgb_str("#e2231a")  # конвертация hex → rgb
+    expect(login.error_box).to_have_css('background-color', expected_color)  # ворнинг нужного цвета
+    expect(login.error_button).to_be_visible() #ворнинг содержит крестик для закрытия
+    for i in range(login.error_warning_pics.count()):
+        expect(login.error_warning_pics.nth(i)).to_be_visible() #отображаются крестики в полях ввода
+
+    #Сделать скрин с текстом ошибки
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    login.page.screenshot(path=f"screenshots/after_empty_password_click_{timestamp}.png")
+
+    #Закрыть ошибку
+    login.error_button.click()
+
+def test_auth_locked_out_error (login):
+
+    #username_list = ('standard_user', 'locked_out_user', 'problem_user', 'performance_glitch_user', 'error_user', 'visual_user')
+
+    login.page.goto(project_url)
+
+    #Проверка окружения - поля ввода и кнопка Login на месте
+    expect(login.username_field).to_be_visible()
+    expect(login.password_field).to_be_visible()
+    expect(login.login_button).to_be_visible()
+
+    #Действия
+    login.username_field.fill('locked_out_user') #
+    login.password_field.fill('secret_sauce')
+
+    # Сделать скрин с заполненными полями
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    login.page.screenshot(path=f"screenshots/username_filled_{timestamp}.png")
+
+    login.login_button.click() #нажать кнопку Login
+
+    #Проверки после клика
+    expect(login.error_box).to_contain_text('Epic sadface: Sorry, this user has been locked out.')  # ворнинг содержит нужный тест ошибки
+    expected_color = hex_to_rgb_str("#e2231a")  # конвертация hex → rgb
+    expect(login.error_box).to_have_css('background-color', expected_color)  # ворнинг нужного цвета
+    expect(login.error_button).to_be_visible() #ворнинг содержит крестик для закрытия
+    for i in range(login.error_warning_pics.count()):
+        expect(login.error_warning_pics.nth(i)).to_be_visible() #отображаются крестики в полях ввода
+
+    #Сделать скрин с текстом ошибки
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    login.page.screenshot(path=f"screenshots/after_empty_password_click_{timestamp}.png")
+
+    #Закрыть ошибку
+    login.error_button.click()
+
+def test_auth_performance_glitch_error (login): #не проваливает проверку,не фиксируется задержка перед переходом, подумать еще
+
+    #username_list = ('standard_user', 'locked_out_user', 'problem_user', 'performance_glitch_user', 'error_user', 'visual_user')
+
+    login.page.goto(project_url)
+
+    #Проверка окружения - поля ввода и кнопка Login на месте
+    expect(login.username_field).to_be_visible()
+    expect(login.password_field).to_be_visible()
+    expect(login.login_button).to_be_visible()
+
+    #Действия
+    login.username_field.fill('performance_glitch_user') #
+    login.password_field.fill('secret_sauce')
+
+    # Сделать скрин с заполненными полями
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    login.page.screenshot(path=f"screenshots/username_filled_{timestamp}.png")
+
+    login.login_button.click() #нажать кнопку Login
+
+    # Проверки после клика
+
+    expect(login.page).to_have_url(project_url_after_auth)
+
+    # Сделать скрин
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    login.page.screenshot(path=f"screenshots/correct_redirect_{timestamp}.png")
+
+
+
 
 
 

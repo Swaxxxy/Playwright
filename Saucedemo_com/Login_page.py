@@ -1,5 +1,6 @@
 from playwright.sync_api import Page
 import Login_Page_Selectors
+from Config import project_url,valid_username,valid_password
 
 class LoginPage:
     def __init__(self, page: Page):
@@ -15,3 +16,11 @@ class LoginPage:
         self.error_button = page.locator(Login_Page_Selectors.error_button)
         self.error_warning_pics = page.locator(Login_Page_Selectors.error_warning_pics)
         self.cred_passwords = page.locator(Login_Page_Selectors.cred_passwords)
+
+    def open(self):
+            self.page.goto(project_url)
+
+    def login(self):
+            self.username_field.fill(valid_username)
+            self.password_field.fill(valid_password)
+            self.login_button.click()

@@ -1,10 +1,12 @@
 import os
 import pytest
+import Config
 
 from datetime import datetime
 from playwright.sync_api import Page,expect
 from Login_page import LoginPage
 from Inventory_page import InventoryPage
+
 
 @pytest.fixture() # Предусловие логина для всех тестов
 def inventory(page):
@@ -32,3 +34,34 @@ def test_card_transition (inventory): # тест перехода карточк
     print("Текущий Url после перехода",inventory.page.url)
     expect(inventory.page).to_have_url('https://www.saucedemo.com/inventory-item.html?id=4')
 
+def test_filter_work (inventory):
+
+    # Price (Name (A to Z))
+    inventory.filter_button.select_option('Name (A to Z)')
+    all_headers = inventory.card_header.all_text_contents()  # получаем список всех ценников
+    assert all_headers == sorted(all_headers)
+
+    Config.take_screenshot(inventory.page,name=Config.filter_name_text_asc)
+
+    # Price (Name (Z to A)
+    inventory.filter_button.select_option('Name (Z to A)')
+    all_headers = inventory.card_header.all_text_contents()  # получаем список всех ценников
+    assert all_headers == sorted(all_headers,reverse=True)
+
+    Config.take_screenshot(inventory.page,name=Config.filter_name_text_desc)
+
+    # Price (high to low)
+    inventory.filter_button.select_option('Price (high to low)')
+    all_prices = inventory.card_price.all_text_contents()  # получаем список всех ценников
+    all_prices = [float(price.replace('$', '')) for price in all_prices]
+    assert all_prices == sorted(all_prices,reverse=True)
+
+    Config.take_screenshot(inventory.page,name=Config.filter_name_price_desc)
+
+    # Price (low to high)
+    inventory.filter_button.select_option('Price (low to high)')
+    all_prices = inventory.card_price.all_text_contents() # получаем список всех ценников
+    all_prices = [float(price.replace('$','')) for price in all_prices]
+    assert all_prices == sorted(all_prices)
+
+    #Config.take_screenshot(inventory.page,name=Config.filter_name_price_asc) # фикстура сделает последний скриншот

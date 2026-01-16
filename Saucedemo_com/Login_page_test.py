@@ -1,9 +1,9 @@
 import re
 import pytest
+import Config
 
-from Config import project_url,project_url_after_auth,cred_list_text,hex_to_rgb_str
 from datetime import datetime
-from playwright.sync_api import Page,expect
+from playwright.sync_api import expect
 from Login_page import LoginPage
 
 @pytest.fixture
@@ -21,13 +21,13 @@ def screenshot_after_test(page, request):
 
     #Функция для теста заголовка
 def test_title (login):
-    login.page.goto(project_url)
+    login.page.goto(Config.project_url)
     expect(login.page).to_have_title(re.compile('Swag Labs'))
 
     #Функция для теста блока авторизации - формы, содержащей поля ввода и кнопку
 def test_auth_block (login):
 
-    login.page.goto(project_url)
+    login.page.goto(Config.project_url)
 
     #Проверка видимости всего блока авторизации
     expect(login.auth_block).to_be_visible()
@@ -45,17 +45,17 @@ def test_auth_block (login):
     expect(login.login_button).to_have_attribute('value', 'Login')
 
     #Проверка цвета кнопки
-    expected_color = hex_to_rgb_str("#3ddc91")
+    expected_color = Config.hex_to_rgb_str("#3ddc91")
     expect(login.login_button).to_have_css('background-color',expected_color)
 
     # Функция для теста нижнего блока - форма, содержащей допустимые Username'ы и пароль
 def test_futer_block (login):
 
-    login.page.goto(project_url)
+    login.page.goto(Config.project_url)
 
     #Проверка наличия списка допустимых Username'ов
     expect(login.cred_list).to_be_visible()
-    expect(login.cred_list).to_contain_text(cred_list_text)
+    expect(login.cred_list).to_contain_text(Config.cred_list_text)
 
     #Проверка наличия допустимого пароля
     expect(login.cred_passwords).to_be_visible()
@@ -66,7 +66,7 @@ def test_auth_happy_path (login):
     #username_list = ('standard_user', 'locked_out_user', 'problem_user', 'performance_glitch_user', 'error_user', 'visual_user')
     #password = secret_sauce
 
-    login.page.goto(project_url)
+    login.page.goto(Config.project_url)
 
     #Проверка окружения - поля ввода и кнопка Login на месте
     expect(login.username_field).to_be_visible()
@@ -85,7 +85,7 @@ def test_auth_happy_path (login):
 
     #Проверки после клика
 
-    expect(login.page).to_have_url(project_url_after_auth)
+    expect(login.page).to_have_url(Config.project_url_after_auth)
 
     # Сделать скрин
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -93,7 +93,7 @@ def test_auth_happy_path (login):
 
 def test_auth_blank_fields_error(login):
 
-    login.page.goto(project_url)
+    login.page.goto(Config.project_url)
 
     # Проверка окружения - поля ввода и кнопка Login на месте
     expect(login.auth_block).to_be_visible()
@@ -103,7 +103,7 @@ def test_auth_blank_fields_error(login):
 
     #Проверки после клика
     expect(login.error_box).to_contain_text('Epic sadface: Username is required')  # ворнинг содержит нужный тест ошибки
-    expected_color = hex_to_rgb_str("#e2231a")  # конвертация hex → rgb
+    expected_color = Config.hex_to_rgb_str("#e2231a")  # конвертация hex → rgb
     expect(login.error_box).to_have_css('background-color', expected_color)  # ворнинг нужного цвета
     expect(login.error_button).to_be_visible() #ворнинг содержит крестик для закрытия
 
@@ -130,7 +130,7 @@ def test_auth_one_field_blank_error (login):
 
     #username_list = ('standard_user', 'locked_out_user', 'problem_user', 'performance_glitch_user', 'error_user', 'visual_user')
 
-    login.page.goto(project_url)
+    login.page.goto(Config.project_url)
 
     #Проверка окружения - поля ввода и кнопка Login на месте
     expect(login.username_field).to_be_visible()
@@ -148,7 +148,7 @@ def test_auth_one_field_blank_error (login):
 
     #Проверки после клика
     expect(login.error_box).to_contain_text('Epic sadface: Password is required')  # ворнинг содержит нужный тест ошибки
-    expected_color = hex_to_rgb_str("#e2231a")  # конвертация hex → rgb
+    expected_color = Config.hex_to_rgb_str("#e2231a")  # конвертация hex → rgb
     expect(login.error_box).to_have_css('background-color', expected_color)  # ворнинг нужного цвета
     expect(login.error_button).to_be_visible() #ворнинг содержит крестик для закрытия
     for i in range(login.error_warning_pics.count()):
@@ -166,7 +166,7 @@ def test_auth_invalid_fill_error (login):
 
     #username_list = ('standard_user', 'locked_out_user', 'problem_user', 'performance_glitch_user', 'error_user', 'visual_user')
 
-    login.page.goto(project_url)
+    login.page.goto(Config.project_url)
 
     #Проверка окружения - поля ввода и кнопка Login на месте
     expect(login.username_field).to_be_visible()
@@ -185,7 +185,7 @@ def test_auth_invalid_fill_error (login):
 
     #Проверки после клика
     expect(login.error_box).to_contain_text('Epic sadface: Username and password do not match any user in this service')  # ворнинг содержит нужный тест ошибки
-    expected_color = hex_to_rgb_str("#e2231a")  # конвертация hex → rgb
+    expected_color = Config.hex_to_rgb_str("#e2231a")  # конвертация hex → rgb
     expect(login.error_box).to_have_css('background-color', expected_color)  # ворнинг нужного цвета
     expect(login.error_button).to_be_visible() #ворнинг содержит крестик для закрытия
     for i in range(login.error_warning_pics.count()):
@@ -202,7 +202,7 @@ def test_auth_locked_out_error (login):
 
     #username_list = ('standard_user', 'locked_out_user', 'problem_user', 'performance_glitch_user', 'error_user', 'visual_user')
 
-    login.page.goto(project_url)
+    login.page.goto(Config.project_url)
 
     #Проверка окружения - поля ввода и кнопка Login на месте
     expect(login.username_field).to_be_visible()
@@ -221,7 +221,7 @@ def test_auth_locked_out_error (login):
 
     #Проверки после клика
     expect(login.error_box).to_contain_text('Epic sadface: Sorry, this user has been locked out.')  # ворнинг содержит нужный тест ошибки
-    expected_color = hex_to_rgb_str("#e2231a")  # конвертация hex → rgb
+    expected_color = Config.hex_to_rgb_str("#e2231a")  # конвертация hex → rgb
     expect(login.error_box).to_have_css('background-color', expected_color)  # ворнинг нужного цвета
     expect(login.error_button).to_be_visible() #ворнинг содержит крестик для закрытия
     for i in range(login.error_warning_pics.count()):
@@ -238,7 +238,7 @@ def test_auth_performance_glitch_error (login): #не проваливает п�
 
     #username_list = ('standard_user', 'locked_out_user', 'problem_user', 'performance_glitch_user', 'error_user', 'visual_user')
 
-    login.page.goto(project_url)
+    login.page.goto(Config.project_url)
 
     #Проверка окружения - поля ввода и кнопка Login на месте
     expect(login.username_field).to_be_visible()
@@ -257,7 +257,7 @@ def test_auth_performance_glitch_error (login): #не проваливает п�
 
     # Проверки после клика
 
-    expect(login.page).to_have_url(project_url_after_auth)
+    expect(login.page).to_have_url(Config.project_url_after_auth)
 
     # Сделать скрин
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")

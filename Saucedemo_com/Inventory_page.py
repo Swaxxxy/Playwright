@@ -8,9 +8,17 @@ class InventoryPage:
         #Локаторы
         self.menu_button= page.locator(Inventory_Page_Selectors.menu_button)
         self.filter_button = page.locator(Inventory_Page_Selectors.filter_button)
+
+        #cart
         self.cart = page.locator(Inventory_Page_Selectors.cart)
+        self.cart_badge = page.locator(Inventory_Page_Selectors.cart_badge)
+
+        #card
         self.card_header = page.locator(Inventory_Page_Selectors.card_header).first
         self.card_description = page.locator(Inventory_Page_Selectors.card_description)
         self.card_price = page.locator(Inventory_Page_Selectors.card_price)
-        self.card_add_button = page.locator(Inventory_Page_Selectors.card_add_button)
         self.card_img = page.locator(Inventory_Page_Selectors.card_img)
+
+        #card_button
+        self.card_add_button = page.locator(Inventory_Page_Selectors.card_add_button)
+        self.card_remove_button = page.locator(Inventory_Page_Selectors.card_remove_button)

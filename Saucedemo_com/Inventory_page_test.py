@@ -1,4 +1,7 @@
 import os
+import re
+import time
+
 import pytest
 import Config
 
@@ -65,3 +68,17 @@ def test_filter_work (inventory):
     assert all_prices == sorted(all_prices)
 
     #Config.take_screenshot(inventory.page,name=Config.filter_name_price_asc) # фикстура сделает последний скриншот
+
+def test_add_to_cart (inventory):
+
+    inventory.card_add_button.click()
+
+    #expect(inventory.card_add_button).to_have_attribute()
+    expect(inventory.cart_badge).to_contain_text("1")
+
+    time.sleep(1) #пауза для отрисовки изображений и иконок
+    Config.take_screenshot(inventory.page, name="1 item Added")
+
+    inventory.card_remove_button.click()
+
+    expect(inventory.cart_badge).not_to_be_visible()

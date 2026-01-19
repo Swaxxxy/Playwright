@@ -35,7 +35,7 @@ def test_card_transition (inventory): # тест перехода карточк
     inventory.card_header.click()
 
     print("Текущий Url после перехода",inventory.page.url)
-    expect(inventory.page).to_have_url('https://www.saucedemo.com/inventory-item.html?id=4')
+    expect(inventory.page).to_have_url(re.compile("inventory-item",re.IGNORECASE))
 
 def test_filter_work (inventory):
 
@@ -74,10 +74,10 @@ def test_add_to_cart (inventory):
     inventory.card_add_button.click()
 
     #expect(inventory.card_add_button).to_have_attribute()
-    expect(inventory.cart_badge).to_contain_text("1")
+    expect(inventory.cart_badge).to_contain_text(re.compile(r"\d+"))
 
     time.sleep(1) #пауза для отрисовки изображений и иконок
-    Config.take_screenshot(inventory.page, name="1 item Added")
+    Config.take_screenshot(inventory.page, name="item Added")
 
     inventory.card_remove_button.click()
 

@@ -22,3 +22,14 @@ class InventoryPage:
         #card_button
         self.card_add_button = page.locator(Inventory_Page_Selectors.card_add_button)
         self.card_remove_button = page.locator(Inventory_Page_Selectors.card_remove_button)
+
+        #checkout_button
+        self.checkout_button = page.locator(Inventory_Page_Selectors.checkout_button)
+        self.checkout_button_continue = page.locator(Inventory_Page_Selectors.checkout_button_continue)
+
+        self.first_name_checkout = page.locator(Inventory_Page_Selectors.checkout_info_first_name)
+        self.last_name_checkout = page.locator(Inventory_Page_Selectors.checkout_info_last_name)
+        self.zip_code_checkout = page.locator(Inventory_Page_Selectors.checkout_info_zip_code)
+        self.checkout_button_finish = page.locator(Inventory_Page_Selectors.checkout_button_finish)
+
+        self.logo = page.locator(Inventory_Page_Selectors.logo)

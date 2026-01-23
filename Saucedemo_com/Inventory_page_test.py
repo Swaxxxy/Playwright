@@ -3,10 +3,11 @@ import re
 import time
 
 import pytest
+
 import Config
 
 from datetime import datetime
-from playwright.sync_api import Page,expect
+from playwright.sync_api import expect
 from Login_page import LoginPage
 from Inventory_page import InventoryPage
 
@@ -69,16 +70,56 @@ def test_filter_work (inventory):
 
     #Config.take_screenshot(inventory.page,name=Config.filter_name_price_asc) # фикстура сделает последний скриншот
 
-def test_add_to_cart (inventory):
+def test_add_to_cart_happy_path (inventory):
 
     inventory.card_add_button.click()
 
-    #expect(inventory.card_add_button).to_have_attribute()
     expect(inventory.cart_badge).to_contain_text(re.compile(r"\d+"))
 
-    time.sleep(1) #пауза для отрисовки изображений и иконок
+    time.sleep(1) #пауза для отрисовки изображений и иконок для скриншота
     Config.take_screenshot(inventory.page, name="item Added")
 
     inventory.card_remove_button.click()
 
     expect(inventory.cart_badge).not_to_be_visible()
+
+def test_order_happy_path (inventory):
+
+    # Step 1 cart page
+
+    inventory.card_add_button.click()
+    inventory.cart_badge.click()
+
+    expect(inventory.page).to_have_url(re.compile("cart",re.IGNORECASE))
+    Config.take_screenshot(inventory.page, name="checkout")
+
+    inventory.checkout_button.click()
+
+    # Step 2 delivery page
+
+    expect(inventory.page).to_have_url(re.compile("checkout-step-one",re.IGNORECASE))
+    Config.take_screenshot(inventory.page, name="checkout_delivery_page")
+
+    inventory.first_name_checkout.fill("any")
+    inventory.last_name_checkout.fill("any")
+    inventory.zip_code_checkout.fill("_")
+
+    Config.take_screenshot(inventory.page, name="checkout_order_filled_delivery_page")
+
+    inventory.checkout_button_continue.click()
+
+    # Step 3 validation page
+
+    expect(inventory.page).to_have_url(re.compile("checkout-step-two", re.IGNORECASE))
+    Config.take_screenshot(inventory.page, name="checkout_order_validation_page")
+
+    inventory.checkout_button_finish.click()
+
+    # Step 4
+
+    expect(inventory.page).to_have_url(re.compile("checkout-complete", re.IGNORECASE))
+    expect(inventory.logo).to_be_visible()
+
+
+
+
